@@ -189,7 +189,7 @@ and transforms it into analytics-ready datasets.
 ## Clone Repository
 
 ``` bash
-git clone https://github.com/BrightOsas/wesonline-data-engineering-tutorial.git
+git clone https://github.com/Sanusi-Abdulmalik/wesonline-data-engineering-tutorial  
 cd wesonline-data-engineering-tutorial
 ```
 
