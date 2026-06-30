@@ -62,20 +62,11 @@ REST API / Excel
 
 ## Medallion Architecture
 
-  -----------------------------------------------------------------------
-  Layer                           Purpose
-  ------------------------------- ---------------------------------------
-  Bronze                          Stores raw data extracted from APIs and
-                                  Excel files.
-
-  Silver                          Cleans, standardizes, validates, and
-                                  enriches the data.
-
-  Gold                            Creates aggregated, analytics-ready
-                                  datasets for reporting and dashboards.
-  -----------------------------------------------------------------------
-
-------------------------------------------------------------------------
+| Layer  | Purpose                                                              |
+|--------|-----------------------------------------------------------------------|
+| Bronze | Stores raw data extracted from APIs and Excel files.                 |
+| Silver | Cleans, standardizes, validates, and enriches the data.               |
+| Gold   | Creates aggregated, analytics-ready datasets for reporting and dashboards. |
 
 # Project 1 -- Customer Cart Pipeline
 
