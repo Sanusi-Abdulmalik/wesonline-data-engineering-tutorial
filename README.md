@@ -1,146 +1,239 @@
-# WESOnline Tutorial
+# End-to-End Data Engineering Pipelines with Airflow, PostgreSQL & Docker
 
-Data Engineering tutorial projects built with Python, Apache Airflow, PostgreSQL, and Docker. This repository demonstrates the design and implementation of end-to-end data pipelines using different data sources, including REST APIs and Excel files.
+## Overview
 
+This repository contains two end-to-end Data Engineering projects built
+with **Python**, **Apache Airflow**, **PostgreSQL**, and **Docker**. The
+pipelines ingest data from REST APIs and Excel files, process them using
+the **Medallion Architecture (Bronze, Silver, Gold)**, and orchestrate
+workflows with Apache Airflow.
 
-# Overview
+## Architecture
 
-This repository contains two mini-projects designed to showcase common Data Engineering workflows:
-
-1. Customer Cart Pipeline : A data pipeline that extracts customer cart data from API endpoints, performs transformations, and loads the processed data into PostgreSQL.
-
-2. Survey Data Pipeline : A data pipeline that ingests survey data from a local Excel file, applies data transformations and validations, and loads the results into PostgreSQL.
-
-Both projects are orchestrated using Apache Airflow and containerized with Docker to ensure reproducibility and ease of deployment.
+``` text
+REST API / Excel
+       │
+       ▼
+ Bronze Layer
+       │
+       ▼
+ Silver Layer
+       │
+       ▼
+ Gold Layer
+       │
+       ▼
+ PostgreSQL
+       │
+       ▼
+ Apache Airflow
+```
 
 ## Tech Stack
-* Python
-* Apache Airflow
-* PostgreSQL
-* Docker & Docker Compose
-* Pandas
-* SQL
 
+-   Python
+-   Apache Airflow
+-   PostgreSQL
+-   Docker & Docker Compose
+-   Pandas
+-   SQLAlchemy
+-   Requests
+-   SQL
 
-## Project 1: Customer Cart Pipeline
-### Objective
+## Repository Structure
 
-Build an ETL pipeline that extracts customer cart data from external API endpoints and stores the processed data in PostgreSQL.
+``` text
+.
+├── airflow/
+│   ├── dags/
+│   ├── logs/
+│   └── plugins/
+├── my_files/
+│   └── Survey Data.xlsx
+├── scripts/
+│   ├── customer_pipeline.py
+│   ├── survey_pipeline.py
+│   └── loader.py
+├── screenshots/
+├── docker-compose.yml
+├── Dockerfile
+└── README.md
+```
 
-### Workflow
-Extract customer cart data from API endpoints.
-Perform data cleaning and transformation.
-Validate data quality.
-Load transformed data into PostgreSQL.
-Schedule and monitor the pipeline using Airflow.
+## Medallion Architecture
 
-<img width="959" height="416" alt="image" src="https://github.com/user-attachments/assets/fd9c91fb-1663-44df-ad63-4accba69dbdd" />
+  -----------------------------------------------------------------------
+  Layer                           Purpose
+  ------------------------------- ---------------------------------------
+  Bronze                          Stores raw data extracted from APIs and
+                                  Excel files.
 
+  Silver                          Cleans, standardizes, validates, and
+                                  enriches the data.
 
+  Gold                            Creates aggregated, analytics-ready
+                                  datasets for reporting and dashboards.
+  -----------------------------------------------------------------------
 
-## Project 2: Survey Data Pipeline
-### Objective
+------------------------------------------------------------------------
 
-Build a batch-processing pipeline that ingests survey responses from an Excel file and loads the cleaned data into PostgreSQL.
+# Project 1 -- Customer Cart Pipeline
 
-### Workflow
-Read survey data from Excel.
-Clean and standardize records.
-Perform validation checks.
-Load processed data into PostgreSQL.
-Schedule and monitor execution with Airflow.
+## Objective
 
-<img width="976" height="420" alt="image" src="https://github.com/user-attachments/assets/795e1642-80a4-4275-9fb3-4ba0754ead43" />
+Build an ETL pipeline that extracts customer and cart data from the
+DummyJSON API, enriches the data, and produces business-ready reporting
+tables.
 
+### Pipeline
 
-## Getting Started
-### Prerequisites
+-   Extract customer records
+-   Extract cart records
+-   Load raw data into Bronze
+-   Clean and enrich customer/cart data in Silver
+-   Generate Gold-layer summary tables
+-   Orchestrate using Apache Airflow
 
-Ensure the following are installed:
+### Screenshots
 
-* Docker
-* Docker Compose
-* Git
+**Airflow DAG**
 
-<img width="1004" height="595" alt="image" src="https://github.com/user-attachments/assets/f92837b1-918a-494b-b3bd-ade178f435f6" />
+![Project 1 Airflow DAG](screenshots/Project1_Airflow%20DAG.png)
 
+**Successful DAG Run**
 
-### Clone the Repository
+![Project 1 Successful DAG Run](screenshots/Project1_Successful%20DAG%20run.png)
 
+**Bronze Tables**
+
+![Project 1 Bronze Table 1](screenshots/Project1_Bronze%20table1.png)
+![Project 1 Bronze Table 2](screenshots/Project1_Bronze%20table2.png)
+
+**Silver Table**
+
+![Project 1 Silver Table](screenshots/Project1_Silver%20table.png)
+
+**Gold Tables**
+
+![Project 1 Gold Table 1](screenshots/Project1_Gold%20table1.png)
+![Project 1 Gold Table 2](screenshots/Project1_Gold%20table2.png)
+![Project 1 Gold Table 3](screenshots/Project1_Gold%20table3.png)
+![Project 1 Gold Table 4](screenshots/Project1_Gold%20table4.png)
+
+------------------------------------------------------------------------
+
+# Project 2 -- Survey Data Pipeline
+
+## Objective
+
+Build a batch ETL pipeline that ingests salary survey data from Excel
+and transforms it into analytics-ready datasets.
+
+### Pipeline
+
+-   Read survey data from Excel
+-   Load raw records into Bronze
+-   Rename and standardize columns
+-   Load transformed records into Silver
+-   Generate salary summary tables in Gold
+-   Schedule with Apache Airflow
+
+### Screenshots
+
+**Airflow DAG**
+
+![Project 2 Airflow DAG](screenshots/Project2_%20Airflow%20DAG.png)
+
+**Successful DAG Run**
+
+![Project 2 Successful DAG Run](screenshots/Project2_%20Successful%20DAG%20run.png)
+
+**Bronze Table**
+
+![Project 2 Bronze Table](screenshots/Project2_Bronze%20table.png)
+
+**Silver Table**
+
+![Project 2 Silver Table](screenshots/Project2_Silver%20table.png)
+
+**Gold Tables**
+
+![Project 2 Gold Table 1](screenshots/Project2_Gold%20table1.png)
+![Project 2 Gold Table 2](screenshots/Project2_Gold%20table2.png)
+![Project 2 Gold Table 3](screenshots/Project2_Gold%20table3.png)
+
+------------------------------------------------------------------------
+
+# Features
+
+-   REST API ingestion
+-   Excel file ingestion
+-   Bronze, Silver and Gold layers
+-   Medallion Architecture
+-   Apache Airflow orchestration
+-   PostgreSQL storage
+-   Dockerized deployment
+-   Data cleaning and validation
+-   Business-ready aggregated tables
+
+------------------------------------------------------------------------
+
+# Getting Started
+
+## Prerequisites
+
+-   Docker
+-   Docker Compose
+-   Git
+
+## Clone Repository
+
+``` bash
 git clone https://github.com/BrightOsas/wesonline-data-engineering-tutorial.git
+cd wesonline-data-engineering-tutorial
+```
 
-cd wesonline-data-engineering-tutorial  
+## Run
 
-### Start the Environment
-
+``` bash
 docker compose up --build
+```
 
-### Access Airflow
+### Airflow
 
-Once the containers are running, open the Airflow web interface and unpause the DAGs.
+-   URL: http://localhost:8081
+-   Username: admin
+-   Password: admin
 
-Login using the credentials configured in your Airflow environment.
+### pgAdmin
 
-### Access Pgadmin
+-   URL: http://localhost:8080
 
-* Open the pgAdmin web interface.
-* Create and configure a new server connection.
-* Set the Host name/address to postgres (this is the default hostname defined in the docker-compose.yml file).
-* If you changed the PostgreSQL service name or hostname in your Docker Compose configuration, use the hostname you configured instead.
+Register a server using:
 
-<img width="1070" height="650" alt="image" src="https://github.com/user-attachments/assets/22f06eeb-622c-415e-8472-83a6dd1a21c2" />
+-   Host: postgres
+-   Port: 5432
+-   Database: airflow
+-   Username: airflow
+-   Password: airflow
 
+------------------------------------------------------------------------
 
-## Learning Objectives
+# Future Improvements
 
-This repository demonstrates:
+-   Incremental loading
+-   Slowly Changing Dimensions (SCD)
+-   Data quality checks
+-   dbt transformations
+-   GitHub Actions CI/CD
+-   Power BI dashboards
 
-* Building ETL pipelines with Python
-* Working with REST APIs
-* Processing Excel datasets
-* Orchestrating workflows using Apache Airflow
-* Loading data into PostgreSQL
-* Containerizing data applications with Docker
-* Creating reproducible Data Engineering environments
+------------------------------------------------------------------------
 
+# Authors
+-   [Abdulmalik Sanusi](https://github.com/Sanusi-Abdulmalik)
+-   [Bright Osas](https://github.com/BrightOsas)
 
-## Challenge
-
-Now it's your turn! Complete the following tasks to reinforce what you've learned.
-
-### Part 1: Environment Setup
-* Set up the project on your local machine.
-* Verify that all Docker containers are running successfully.
-* Access the Airflow web interface and ensure both DAGs are available.
-* Trigger each DAG and confirm that the pipelines complete successfully.
-* Validate the loaded data by querying the Bronze and Silver layer tables using pgAdmin.
-
-### Part 2: Extend the Data Pipeline
-Currently, both projects load data into the Bronze and Silver layers only. No data is being loaded into the Gold layer.
-
-Your task is to extend each pipeline by implementing a Gold layer.
-
-### Customer Cart Project
-* Create at least one Gold layer transformation using data from the Silver layer.
-* Load the transformed data into the gold_layer schema.
-* Update the Airflow DAG to include the new Gold layer task.
-* Configure the task dependencies so the Gold task runs only after the Silver layer has completed successfully.
-### Survey Data Project
-* Create at least one Gold layer transformation using data from the Silver layer.
-* Load the transformed data into the gold_layer schema.
-* Update the Airflow DAG to include the new Gold layer task.
-* Configure the task dependencies so the Gold task runs only after the Silver layer has completed successfully.
-
-### Part 3: Validation
-
-After implementing the Gold layer:
-* Trigger both DAGs.
-* Confirm that all tasks complete successfully.
-* Verify that the Gold layer tables have been created.
-* Validate the data by querying the Gold layer tables in pgAdmin.
-* Ensure the transformed data accurately reflects the business logic you implemented.
-
-
-## Author
-
-Created as a beginner-friendly Data Engineering project designed to introduce new learners to ETL development, workflow orchestration, and data pipeline fundamentals using Python, Apache Airflow, PostgreSQL, and Docker.
+Created as a portfolio project demonstrating modern Data Engineering
+practices using Python, Apache Airflow, PostgreSQL, Docker, and the
+Medallion Architecture.

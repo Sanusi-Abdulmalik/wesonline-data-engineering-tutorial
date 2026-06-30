@@ -40,4 +40,8 @@ with DAG(
         task_id="Enrinched_data",
         bash_command="python /opt/airflow/scripts/ecom_sales_data.py enrich"
     )
-    start >> [cart, cust] >> enrich >> end
+    gold = BashOperator(
+        task_id="Summary_data",
+        bash_command="python /opt/airflow/scripts/ecom_sales_data.py summary"
+    )
+    start >> [cart, cust] >> enrich >> gold >> end

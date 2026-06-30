@@ -138,6 +138,123 @@ def transform_to_silver():
                        ,mode='replace',schema='silver_layer')
     print('done')
 
+def load_gold_data():
+    try:
+        print("Started processing gold data")
+
+        query = """
+        SELECT *
+        FROM silver_layer.cart_user_enriched
+        """
+
+        df = loader.read_df(query=query)
+
+        print("Successfully loaded silver data")
+
+        # Ensure numeric columns
+        numeric_cols = [
+            "product_quantity",
+            "product_price",
+            "product_total",
+            "cart_total"
+        ]
+
+        for col in numeric_cols:
+            df[col] = pd.to_numeric(df[col], errors="coerce")
+
+        # Remove invalid rows
+        df = df.dropna(subset=["product_total"])
+
+        # ====================================
+        # Gold Table 1 - Sales by Country
+        # ====================================
+
+        sales_country = (
+            df.groupby("country", as_index=False)
+              .agg(
+                  total_sales=("product_total", "sum"),
+                  total_quantity=("product_quantity", "sum"),
+                  total_orders=("cart_id", "nunique")
+              )
+              .sort_values("total_sales", ascending=False)
+        )
+
+        loader.write_to_db(
+            data_df=sales_country,
+            table_name="sales_by_country",
+            mode="replace",
+            schema="gold_layer"
+        )
+
+        # ====================================
+        # Gold Table 2 - Sales by Product
+        # ====================================
+
+        sales_product = (
+            df.groupby(["product_id", "product_name"], as_index=False)
+              .agg(
+                  total_sales=("product_total", "sum"),
+                  quantity_sold=("product_quantity", "sum"),
+                  total_orders=("cart_id", "nunique")
+              )
+              .sort_values("total_sales", ascending=False)
+        )
+
+        loader.write_to_db(
+            data_df=sales_product,
+            table_name="sales_by_product",
+            mode="replace",
+            schema="gold_layer"
+        )
+
+        # ====================================
+        # Gold Table 3 - Top Customers
+        # ====================================
+
+        customer_sales = (
+            df.groupby(
+                ["userId", "customer_name", "country"],
+                as_index=False
+            )
+            .agg(
+                total_spent=("product_total", "sum"),
+                total_orders=("cart_id", "nunique")
+            )
+            .sort_values("total_spent", ascending=False)
+        )
+
+        loader.write_to_db(
+            data_df=customer_sales,
+            table_name="customer_sales_summary",
+            mode="replace",
+            schema="gold_layer"
+        )
+
+        # ====================================
+        # Gold Table 4 - State Summary
+        # ====================================
+
+        state_summary = (
+            df.groupby(["country", "state"], as_index=False)
+              .agg(
+                  customers=("userId", "nunique"),
+                  sales=("product_total", "sum")
+              )
+              .sort_values("sales", ascending=False)
+        )
+
+        loader.write_to_db(
+            data_df=state_summary,
+            table_name="state_sales_summary",
+            mode="replace",
+            schema="gold_layer"
+        )
+
+        print("Successfully processed gold layer")
+
+    except Exception as err:
+        print(f"Failed processing gold layer with Error: {err}")
+        raise
 
 if __name__ == '__main__':
     run_module = sys.argv[1]
@@ -147,3 +264,5 @@ if __name__ == '__main__':
         load_cart_sales()
     elif run_module == 'enrich':
         transform_to_silver()
+    elif run_module == 'summary':
+        load_gold_data()

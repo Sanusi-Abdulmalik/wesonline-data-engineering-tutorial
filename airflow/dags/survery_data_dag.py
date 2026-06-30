@@ -35,5 +35,9 @@ with DAG(
         task_id='silver_data',
         bash_command='python /opt/airflow/scripts/survey_data_pipeline.py 2'
     )
+    gold_task = BashOperator(
+    task_id='gold_layer',
+        bash_command='python /opt/airflow/scripts/survey_data_pipeline.py 3'
+    )
 
-    start >> bronze_job >> silver_job >> end
+    start >> bronze_job >> silver_job >> gold_task >> end
